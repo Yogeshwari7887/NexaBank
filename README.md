@@ -1,6 +1,6 @@
 <div align="center">
 
-![NexaBank Banner](assets/banner.png)
+<img src="assets/banner.png" alt="NexaBank Banner" width="100%" style="border-radius: 12px; border: 1px solid rgba(212,170,82,0.25); box-shadow: 0 8px 32px rgba(0,0,0,0.5);" />
 
 # 🏦 NexaBank
 
@@ -20,30 +20,36 @@
 
 ---
 
-## 🎨 Visual Identity & Aesthetic
+## 🎨 Visual Identity & Design System
 
 NexaBank breaks away from typical bright corporate banking interfaces, introducing a **Dark Luxury Financial** theme designed to feel premium, exclusive, and editorial.
 
-*   **Deep Navy Canvas:** `#060c1a` to `#172444` gradients provide a high-contrast, distraction-free environment.
-*   **Gold Accents:** `#d4aa52` represents luxury, wealth, and sophisticated action elements.
-*   **Slate Typography:** `#e8edf8` body copy and `#8892aa` secondary titles maintain optimal readability.
-*   **High-End Typography:** Uses the elegant **Playfair Display** for serif headers, **DM Sans** for responsive body content, and **JetBrains Mono** for numerical values and transaction references.
+### 🌗 Theme Color Palette
+*   🔵 **Deep Navy Canvas (`#060c1a`):** Gradients and shadows that provide a high-contrast, distraction-free environment.
+*   🟡 **Gold Accents (`#d4aa52`):** Elegant tone representing luxury, wealth, and sophisticated action elements.
+*   ⚪ **Slate Typography (`#e8edf8`):** Restful body copy and `#8892aa` secondary titles maintaining optimal readability.
+*   🟢 **Success Green (`#26c97e`):** Highlights incoming funds and positive actions.
+*   🔴 **Error Red (`#f05a6e`):** Highlights outgoing transactions and system alerts.
+
+### ✍️ Editorial Typography
+*   **Headers:** Font Family *Playfair Display*, Georgia, serif — for editorial finance authority.
+*   **Body Copy:** Font Family *DM Sans*, system-ui, sans-serif — for fluid, modern text rendering.
+*   **Ledgers & Identifiers:** Font Family *JetBrains Mono*, monospace — for numerical accuracy and security identifiers.
 
 ---
 
-## ⚡ Core Highlights & Features
+## ⚡ System Capabilities & Features
 
-### 👤 User Capabilities
-*   **Dynamic Client Dashboard:** Instant visual summary of account balance, real-time monthly stats (incoming/outgoing logs), and account details.
-*   **Secure Instant Transfers:** Transfer money instantly to any other user via account numbers and IFSC validation.
-*   **Transaction Statements Ledger:** Personal history of all incoming and outgoing funds with custom search and transaction notes.
-*   **Self-Service Account Creation:** Users can register accounts, set initial deposits, and automatically generate a unique `14-digit` account number.
+### 👤 Customer Experience
+*   **Dynamic Dashboard:** Instant visual summary of account balance, real-time monthly stats (incoming/outgoing logs), and detailed account info.
+*   **Secure Fund Transfers:** Real-time money transfers to other accounts validated by account number and branch IFSC code.
+*   **Relative Ledger Timestamp:** Transactions show relative timestamps (e.g. *"5m ago"*, *"Just now"*) for dynamic audit logging.
+*   **Autonomous Registration:** Create accounts, set initial deposits, and automatically generate a unique `14-digit` account number.
 
-### 👑 Administrator Capabilities
-*   **Consolidated Admin Dashboard:** Overview of total volume, active users, today’s activity, and average transaction values.
-*   **Client Management Ledger:** List of all registered users with real-time balance lookup and account activity indicators.
-*   **Account Controls:** Power to instantly activate/deactivate accounts to freeze suspicious actions.
-*   **Complete Transaction Surveillance:** Centralized ledger showing all system-wide transfers with real-time searches.
+### 👑 System Control Panel (Admin)
+*   **Surveillance Dashboard:** Overview of total users, overall bank volume, daily logs, and average transfer amounts.
+*   **User Ledger Admin:** Full access to all accounts with instant activate/deactivate toggles to freeze suspicious accounts.
+*   **Central Transaction Ledger:** Audit-grade tracker of all transactions occurring within the system, searchable by username, email, or transfer remarks.
 
 ---
 
@@ -101,38 +107,41 @@ flowchart TD
 
 ---
 
-## 🔒 Security Architectures
+## 🔒 Security Infrastructure
 
-NexaBank is built with robust mechanisms to safeguard client information and financial assets:
+NexaBank is built with robust protocols to safeguard customer information and financial assets:
 
-1.  **SQL Injection Prevention:** 100% of custom database interactions use PHP Object-Oriented `mysqli::prepare()` statements and parameter binding (`bind_param`). No raw input concatenation.
-2.  **Password Cryptography:** Secure account registration and login verify credentials using state-of-the-art **BCrypt hashing** (`password_hash` with `PASSWORD_DEFAULT`).
+1.  **Prepared Statements (SQLi Prevention):** 100% of database actions use PHP Object-Oriented `mysqli::prepare()` statements and parameter binding (`bind_param`). No raw input concatenation.
+2.  **BCrypt Password Hashing:** Secure registration and login verify passwords using state-of-the-art **BCrypt hashing** (`password_hash` with `PASSWORD_DEFAULT`).
 3.  **XSS Protection:** Output sanitization helper function `e()` escapes user-provided values globally using `htmlspecialchars` and UTF-8 encoding.
-4.  **Transactional Rollbacks:** Fund transfers utilize ACID compliance transactions (`mysqli_begin_transaction`, `mysqli_commit`, `mysqli_rollback`). If either the debit or credit step fails, the entire transaction rolls back to prevent money leakage.
+4.  **Database Transactions (ACID Compliance):** Fund transfers utilize SQL transactions (`mysqli_begin_transaction`, `mysqli_commit`, `mysqli_rollback`). If either the debit or credit step fails, the entire transaction rolls back to prevent money leakage.
 
 ---
 
-## 📊 Database Schema
+## 📊 Relational Database Schema
 
 The database consists of three relational tables optimized with appropriate primary/foreign keys and delete cascades.
 
+<details>
+<summary><b>📋 Click to Expand Database Schema Details</b></summary>
+
 ### 1. `admin_accounts`
-Stores administrative staff profiles authorized to configure and run the bank backend.
+Stores administrative staff profiles authorized to run the backend dashboard.
 | Column | Data Type | Key Type | Purpose |
 | :--- | :--- | :--- | :--- |
 | `id` | INT | PRIMARY KEY | Auto-incrementing identifier |
-| `username` | VARCHAR(100) | - | Administrator displaying name |
+| `username` | VARCHAR(100) | - | Administrator name |
 | `email` | VARCHAR(150) | UNIQUE | Authentication email |
 | `password` | VARCHAR(255) | - | BCrypt hashed password |
 | `created_at` | TIMESTAMP | - | Date/time of record creation |
 
 ### 2. `user_accounts`
-Maintains user records, financial balances, account identification details, and status.
+Maintains user records, financial balances, account details, and status flags.
 | Column | Data Type | Key Type | Purpose |
 | :--- | :--- | :--- | :--- |
 | `id` | INT | PRIMARY KEY | Auto-incrementing identifier |
 | `name` | VARCHAR(150) | - | Account owner full name |
-| `email` | VARCHAR(150) | UNIQUE | Contact and login email address |
+| `email` | VARCHAR(150) | UNIQUE | Authentication email address |
 | `phone` | VARCHAR(20) | - | Contact phone number |
 | `address` | TEXT | - | Physical address |
 | `gender` | ENUM | - | Male, Female, or Other |
@@ -145,7 +154,7 @@ Maintains user records, financial balances, account identification details, and 
 | `created_at` | TIMESTAMP | - | Registration date |
 
 ### 3. `transactions`
-Log ledger documenting transfers between accounts.
+Double-entry ledger documenting transfers between user accounts.
 | Column | Data Type | Key Type | Purpose |
 | :--- | :--- | :--- | :--- |
 | `id` | INT | PRIMARY KEY | Auto-incrementing identifier |
@@ -155,6 +164,8 @@ Log ledger documenting transfers between accounts.
 | `note` | VARCHAR(255) | - | Transaction remarks |
 | `status` | ENUM | - | Success, Failed, or Pending |
 | `date_time` | TIMESTAMP | - | Transfer timestamp |
+
+</details>
 
 ---
 
@@ -178,8 +189,8 @@ Follow these simple steps to host NexaBank on your local development environment
     *   Create a new database named `nexabank`.
     *   Click on **Import** in the database tab, select the `nexabank.sql` file from the project root, and click **Go**.
     
-3.  **Configure Environment Parameters:**
-    Open `config.php` and verify the database connection configuration:
+3.  **Configure Connection Settings:**
+    Open `config.php` and verify the database connection details:
     ```php
     define('DB_HOST', 'localhost');
     define('DB_USER', 'root');      // Your MySQL username
@@ -190,20 +201,29 @@ Follow these simple steps to host NexaBank on your local development environment
 4.  **Run Application:**
     Navigate to `http://localhost/nexabank` in your browser.
 
+> [!IMPORTANT]
+> Make sure to import `nexabank.sql` before running the project to initialize the schema and populate the default seed data.
+
+> [!TIP]
+> **To display the header banner image:**
+> Once you have configured the project, run the setup script by opening `http://localhost/nexabank/copy_asset.php` in your browser. This will automatically copy the generated banner graphic to your assets folder!
+
 ---
 
 ## 🔑 Test Credentials
 
-Use the following seed credentials to explore user and admin dashboards immediately:
+Use the following credentials to explore user and admin dashboards immediately:
 
-### 👤 User Portals
+### 👤 User Accounts
 All users share the default password: `password123`
-*   **Arjun Sharma:** `arjun@example.com`
-*   **Priya Patel:** `priya@example.com`
-*   **Rahul Verma:** `rahul@example.com`
-*   **Sneha Reddy:** `sneha@example.com`
+| Name | Email | Account Number | Initial Balance |
+| :--- | :--- | :--- | :--- |
+| **Arjun Sharma** | `arjun@example.com` | `NEXA0000000001` | ₹125,000.00 |
+| **Priya Patel** | `priya@example.com` | `NEXA0000000002` | ₹87,500.00 |
+| **Rahul Verma** | `rahul@example.com` | `NEXA0000000003` | ₹210,000.00 |
+| **Sneha Reddy** | `sneha@example.com` | `NEXA0000000004` | ₹54,000.00 |
 
-### 👑 Administrator Portal
+### 👑 Administrator Account
 *   **Super Admin:** `admin@nexabank.com`
 *   **Password:** `admin123`
 
@@ -211,10 +231,13 @@ All users share the default password: `password123`
 
 ## 📂 Directory Layout
 
+<details>
+<summary><b>📂 Click to Expand Directory structure</b></summary>
+
 ```bash
 nexabank/
 ├── assets/                  # Project assets (branding & graphics)
-│   └── banner.png
+│   └── banner.png           # Header visual graphic
 ├── css/                     # Styling styles sheets
 │   └── style.css            # Dark luxury visual system
 ├── config.php               # Database configuration and global helpers
@@ -236,6 +259,8 @@ nexabank/
 ├── footer.php               # Core brand footer component
 └── nexabank.sql             # Relational database setup logic
 ```
+
+</details>
 
 ---
 
